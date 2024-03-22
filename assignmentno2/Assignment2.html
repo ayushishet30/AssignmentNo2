@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Data</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-gap: 20px;
+    }
+    .user-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .user-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .user-avatar img {
+      width: 100%;
+      height: auto;
+    }
+    .user-info {
+      padding: 20px;
+    }
+    .user-info h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .user-info p {
+      margin: 5px 0;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="data-container">
+    <!-- User data will be displayed here -->
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const apiUrl = 'https://reqres.in/api/users';
+      const dataContainer = document.querySelector('.data-container');
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          displayUserData(data.data);
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+          dataContainer.innerHTML = '<p>Failed to fetch user data. Please try again later.</p>';
+        });
+
+      function displayUserData(users) {
+        users.forEach(user => {
+          const userCard = document.createElement('div');
+          userCard.classList.add('user-card');
+          userCard.innerHTML = `
+            <div class="user-avatar">
+              <img src="${user.avatar}" alt="${user.first_name} ${user.last_name}">
+            </div>
+            <div class="user-info">
+              <h3>${user.first_name} ${user.last_name}</h3>
+              <p><strong>ID:</strong> ${user.id}</p>
+              <p><strong>Email:</strong> ${user.email}</p>
+            </div>
+          `;
+          dataContainer.appendChild(userCard);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
